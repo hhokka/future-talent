@@ -6,7 +6,8 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-
+import MainViewScreen from '../screens/MainViewScreen';
+import AddObservationScreen from '../screens/AddObservationScreen';
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
 });
@@ -53,8 +54,35 @@ SettingsStack.navigationOptions = {
   ),
 };
 
+const MainViewStack = createStackNavigator({
+  MainView: MainViewScreen,
+});
+
+MainViewStack.navigationOptions = {
+  tabBarLabel: 'Main View',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === 'ios' ? 'ios-list' : 'md-list'}
+    />
+  ),
+};
+
+const AddObservationStack = createStackNavigator({
+  AddObservation: AddObservationScreen,
+});
+
+AddObservationStack.navigationOptions = {
+  tabBarLabel: 'Add Observation',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === 'ios' ? 'ios-add-circle' : 'md-add-circle'}
+    />
+  ),
+};
+
 export default createBottomTabNavigator({
-  HomeStack,
-  LinksStack,
-  SettingsStack,
+  MainViewStack,
+  AddObservationStack,
 });
