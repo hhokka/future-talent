@@ -10,7 +10,9 @@ import {
   View,
   ListView,
   AsyncStorage,
+  TextInput,
 } from 'react-native';
+import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
 import { WebBrowser } from 'expo';
 import { Button } from 'react-native';
 import { MonoText } from '../components/StyledText';
@@ -27,6 +29,10 @@ const rows = [
   { id: 3, text: 'ScrollView' },
   { id: 4, text: 'ListView' },
 ]
+
+this.state = {
+  myKey: null
+}
 
 // Row comparison function
 const rowHasChanged = (r1, r2) => r1.id !== r2.id
@@ -76,13 +82,9 @@ export default class HomeScreen extends React.Component {
 
 
           <View>
-            <Button
-              onPress={this._handleAddObservationPress}
-              title="Add Observation"
-              color="#841584"
-              accessibilityLabel="Add Observation Button"
-            />
-
+            <FormLabel>Name</FormLabel>
+            <FormInput onChangeText={someFunction} />
+            <FormValidationMessage>Error message</FormValidationMessage>
           </View>
           <ListView
             style={styles.container}
@@ -96,7 +98,7 @@ export default class HomeScreen extends React.Component {
 
   _storeData = async () => {
     try {
-      await AsyncStorage.setItem('@MySuperStore:key', 'I like to save it.');
+      await AsyncStorage.setItem('@state:key', 'I like to save it.');
     } catch (error) {
       // Error saving data
     }

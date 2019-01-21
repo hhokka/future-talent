@@ -18,12 +18,13 @@ import {
   StackNavigator,
 } from 'react-navigation';
 
+let timestamp = new Date().toString();
 const observations = [
-  { id: 0, species: 'Birb1', rarity: 'common', notes: 'note1', timestamp: '101010'},
-  { id: 1, species: 'Birb2', rarity: 'common', notes: 'note1', timestamp: '101010'},
-  { id: 2, species: 'Birb3', rarity: 'common', notes: 'note1', timestamp: '101010'},
-  { id: 3, species: 'Birb4', rarity: 'common', notes: 'note1', timestamp: '101010'},
-  
+  { id: 0, species: 'Birb1', rarity: 'common', notes: 'note1', timestamp: timestamp },
+  { id: 1, species: 'Birb2', rarity: 'common', notes: 'note1', timestamp: timestamp },
+  { id: 2, species: 'Birb3', rarity: 'common', notes: 'note1', timestamp: timestamp },
+  { id: 3, species: 'Birb4', rarity: 'common', notes: 'note1', timestamp: timestamp },
+
 ]
 
 // Row comparison function
@@ -33,6 +34,7 @@ const rowHasChanged = (r1, r2) => r1.id !== r2.id
 const ds = new ListView.DataSource({ rowHasChanged })
 
 export default class MainViewScreen extends React.Component {
+  
   static navigationOptions = {
     header: null,
   };
@@ -44,15 +46,7 @@ export default class MainViewScreen extends React.Component {
   renderRow = (rowData) => {
     return (
       <Text style={styles.row}>
-        {rowData.id}
-      </Text>
-    )
-  }
-
-  renderObservationRow = (observations) => {
-    return (
-      <Text style={styles.row}>
-        {observations.text}
+        {rowData.id} | {rowData.species} | {rowData.rarity} | {rowData.notes} | {rowData.timestamp}
       </Text>
     )
   }
@@ -74,50 +68,56 @@ export default class MainViewScreen extends React.Component {
           </View>
 
           <View style={styles.getStartedContainer}>
-
-            <Text style={styles.getStartedText}>
-              Local Birdwatching Association
-            </Text>
+          <Text>
+            
+            Local Birdwatch Organisation
+          </Text>
+  
           </View>
 
 
           <View>
             <Button
-              onPress={() => navigate('AddObservation', {name: 'Jane'})}
+              onPress={() => navigate('AddObservation', { name: 'Jane' })}
               title="Add Observation"
               color="#841584"
               accessibilityLabel="Add Observation Button"
             />
 
           </View>
-          
+
           <ListView
             style={styles.container}
             dataSource={this.state.dataSource}
             renderRow={this.renderRow}
           />
         </ScrollView>
-      </View>
+      </View >
     );
   }
 
   _retrieveData = async () => {
     try {
-      const value = await AsyncStorage.getItem('TASKS');
-      if (value !== null) {
-        // We have data!!
-        console.log(value);
-      }
-     } catch (error) {
-       // Error retrieving data
-     }
+      const value = await AsyncStorage.getItem('@MySuperStore:key');
+      this.setState({myKey: value});
+    } catch (error) {
+      console.log("Error retrieving data" + error);
+    }
   }
-  
+
+  _saveData = async () => {
+    try {
+      await AsyncStorage.setItem('@MySuperStore:key', value);
+    } catch (error) {
+      console.log("Error saving data" + error);
+    }
+  }
+
   _maybeRenderDevelopmentModeWarning() {
     if (__DEV__) {
       const learnMoreButton = (
         <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Add Observation
+          Learn more
         </Text>
       );
 
