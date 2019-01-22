@@ -11,14 +11,11 @@ import {
   ListView,
   AsyncStorage,
   TextInput,
+  Button,
+  TouchableHighlight,
+  Alert,
 } from 'react-native';
-import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
-import { WebBrowser } from 'expo';
-import { Button } from 'react-native';
-import { MonoText } from '../components/StyledText';
-import {
-  StackNavigator,
-} from 'react-navigation';
+
 
 
 // Row data (hard-coded)
@@ -30,24 +27,10 @@ const rows = [
   { id: 4, text: 'ListView' },
 ]
 
-this.state = {
-  myKey: null
-}
-
-// Row comparison function
-const rowHasChanged = (r1, r2) => r1.id !== r2.id
-
-// DataSource template object
-const ds = new ListView.DataSource({ rowHasChanged })
-
-export default class HomeScreen extends React.Component {
+export default class AddObservationScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
-
-  state = {
-    dataSource: ds.cloneWithRows(rows)
-  }
 
   renderRow = (rowData) => {
     return (
@@ -55,6 +38,33 @@ export default class HomeScreen extends React.Component {
         {rowData.text}
       </Text>
     )
+  }
+
+  onClickListener = (viewId) => {
+    this._saveData();
+  }
+
+  _saveData = async () => {
+    try {
+      await AsyncStorage.setItem('@MySuperStore:species', this.state.species);
+    } catch (error) {
+      console.log("Error saving data" + error);
+    }
+    try {
+      await AsyncStorage.setItem('@MySuperStore:rarity', this.state.rarity);
+    } catch (error) {
+      console.log("Error saving data" + error);
+    }
+    try {
+      await AsyncStorage.setItem('@MySuperStore:notes', this.state.notes);
+    } catch (error) {
+      console.log("Error saving data" + error);
+    }
+    try {
+      await AsyncStorage.setItem('@MySuperStore:timeStamp', this.state.timeStamp);
+    } catch (error) {
+      console.log("Error saving data" + error);
+    }
   }
 
   render() {
@@ -79,68 +89,48 @@ export default class HomeScreen extends React.Component {
               Local Birdwatching Association
             </Text>
           </View>
+          <View style={styles.addObservationContainer}>
+            <View style={styles.inputContainer}>
+              <TextInput style={styles.inputs}
+                placeholder="Species"
+                underlineColorAndroid='transparent'
+                onChangeText={(species) => this.setState({ species })} />
+            </View>
 
+            <View style={styles.inputContainer}>
+              <TextInput style={styles.inputs}
+                placeholder="Rarity"
+                underlineColorAndroid='transparent'
+                onChangeText={(rarity) => this.setState({ rarity })} />
+            </View>
 
-          <View>
-            <FormLabel>Name</FormLabel>
-            <FormInput onChangeText={someFunction} />
-            <FormValidationMessage>Error message</FormValidationMessage>
+            <View style={styles.inputContainer}>
+              <TextInput style={styles.inputs}
+                placeholder="Notes"
+                underlineColorAndroid='transparent'
+                onChangeText={(notes) => this.setState({ notes })} />
+            </View>
+            <View>
+              <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => this.onClickListener('Save')}>
+                <Text style={styles.loginText}>Save</Text>
+              </TouchableHighlight>
+
+              <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => this.onClickListener('Cancel')}>
+                <Text style={styles.loginText}>Cancel</Text>
+              </TouchableHighlight>
+            </View>
           </View>
-          <ListView
-            style={styles.container}
-            dataSource={this.state.dataSource}
-            renderRow={this.renderRow}
-          />
         </ScrollView>
       </View>
+
+
     );
   }
 
-  _storeData = async () => {
-    try {
-      await AsyncStorage.setItem('@state:key', 'I like to save it.');
-    } catch (error) {
-      // Error saving data
-    }
-  }
 
-  _maybeRenderDevelopmentModeWarning() {
-    if (__DEV__) {
-      const learnMoreButton = (
-        <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Add Observation
-        </Text>
-      );
-
-      return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use useful development
-          tools. {learnMoreButton}
-        </Text>
-      );
-    } else {
-      return (
-        <Text style={styles.developmentModeText}>
-          You are not in development mode, your app will run at full speed.
-        </Text>
-      );
-    }
-  }
-
-  _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/guides/development-mode');
-  };
-
-  _handleAddObservationPress = () => {
-    this.props.navigation.navigate('Settings');
-  };
-
-  _handleHelpPress = () => {
-    WebBrowser.openBrowserAsync(
-      'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
-    );
-  };
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -234,4 +224,47 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     backgroundColor: 'skyblue',
   },
+  inputContainer: {
+    borderBottomColor: '#F5FCFF',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 30,
+    borderBottomWidth: 1,
+    width: 250,
+    height: 45,
+    marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  inputs: {
+    height: 45,
+    marginLeft: 16,
+    borderBottomColor: '#FFFFFF',
+    flex: 1,
+  },
+  inputIcon: {
+    width: 30,
+    height: 30,
+    marginLeft: 15,
+    justifyContent: 'center'
+  },
+  buttonContainer: {
+    height: 45,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    width: 250,
+    borderRadius: 30,
+  },
+  loginButton: {
+    backgroundColor: "#00b5ec",
+  },
+  loginText: {
+    color: 'white',
+  },
+  addObservationContainer: {
+    alignItems: 'center',
+    marginTop: 100,
+  }
+
 });

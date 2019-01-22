@@ -10,6 +10,7 @@ import {
   View,
   ListView,
   AsyncStorage,
+  Alert,
 } from 'react-native';
 import { WebBrowser } from 'expo';
 import { Button } from 'react-native';
@@ -27,14 +28,23 @@ const observations = [
 
 ]
 
+
 // Row comparison function
 const rowHasChanged = (r1, r2) => r1.id !== r2.id
 
 // DataSource template object
 const ds = new ListView.DataSource({ rowHasChanged })
 
+
 export default class MainViewScreen extends React.Component {
-  
+  componentWillMount(){
+    this._retrieveData();
+    Alert.alert('Species: ' + this.state.species + '\n' +
+    'Rarity: ' + this.state.rarity + '\n' +
+    'Notes: ' + this.state.notes + '\n' + 
+    'Timestamp: ' + this.state.timeStamp
+    );
+}
   static navigationOptions = {
     header: null,
   };
@@ -78,7 +88,7 @@ export default class MainViewScreen extends React.Component {
 
           <View>
             <Button
-              onPress={() => navigate('AddObservation', { name: 'Jane' })}
+              onPress={() => navigate('AddObservation')}
               title="Add Observation"
               color="#841584"
               accessibilityLabel="Add Observation Button"
@@ -96,59 +106,35 @@ export default class MainViewScreen extends React.Component {
     );
   }
 
+  
   _retrieveData = async () => {
     try {
-      const value = await AsyncStorage.getItem('@MySuperStore:key');
-      this.setState({myKey: value});
-    } catch (error) {
-      console.log("Error retrieving data" + error);
+      const speciesValue = await AsyncStorage.getItem('@MySuperStore:species');
+      this.setState({species: speciesValue});
+     } catch (error) {
+      Alert.alert("Error retrieving data " + error);
     }
-  }
-
-  _saveData = async () => {
     try {
-      await AsyncStorage.setItem('@MySuperStore:key', value);
-    } catch (error) {
-      console.log("Error saving data" + error);
+      const rarityValue = await AsyncStorage.getItem('@MySuperStore:rarity');
+      this.setState({rarity: rarityValue});
+     } catch (error) {
+      Alert.alert("Error retrieving data " + error);
     }
-  }
-
-  _maybeRenderDevelopmentModeWarning() {
-    if (__DEV__) {
-      const learnMoreButton = (
-        <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Learn more
-        </Text>
-      );
-
-      return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use useful development
-          tools. {learnMoreButton}
-        </Text>
-      );
-    } else {
-      return (
-        <Text style={styles.developmentModeText}>
-          You are not in development mode, your app will run at full speed.
-        </Text>
-      );
+    try {
+      const notesValue = await AsyncStorage.getItem('@MySuperStore:notes');
+      this.setState({notes: notesValue});
+     } catch (error) {
+      Alert.alert("Error retrieving data " + error);
     }
+    try {
+      const timeStampValue = await AsyncStorage.getItem('@MySuperStore:timeStamp');
+      this.setState({timeStamp: timeStampValue});
+     } catch (error) {
+      Alert.alert("Error retrieving data " + error);
+    }
+    
+    
   }
-
-  _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/guides/development-mode');
-  };
-
-  _handleAddObservationPress = () => {
-    this.props.navigation.navigate('Add Observation');
-  };
-
-  _handleHelpPress = () => {
-    WebBrowser.openBrowserAsync(
-      'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
-    );
-  };
 }
 
 const styles = StyleSheet.create({
